@@ -2,6 +2,7 @@ package com.rinno.simaski.hacerpruebascodigo;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -17,146 +18,131 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
+    int[][] m = new int[6][6];
+    int[][] shortpath;
+    int[][] path = new int[6][6];
+    String partes;
 
-    AnimationView drawLine;
-    String hola = "aqui";
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
+        m[0][0] = 0;
+        m[0][1] = 3;
+        m[0][2] = 5;
+        m[0][3] = 9;
+        m[0][4] = 10000;
+        m[0][5] = 10000;
+        m[1][0] = 3;
+        m[1][1] = 0;
+        m[1][2] = 3;
+        m[1][3] = 4;
+        m[1][4] = 7;
+        m[1][5] = 10000;
+        m[2][0] = 5;
+        m[2][1] = 3;
+        m[2][2] = 0;
+        m[2][3] = 2;
+        m[2][4] = 6;
+        m[2][5] = 8;
+        m[3][0] = 9;
+        m[3][1] = 4;
+        m[3][2] = 2;
+        m[3][3] = 0;
+        m[3][4] = 2;
+        m[3][5] = 2;
+        m[4][0] = 10000;
+        m[4][1] = 7;
+        m[4][2] = 6;
+        m[4][3] = 2;
+        m[4][4] = 0;
+        m[4][5] = 5;
+        m[5][0] = 10000;
+        m[5][1] = 10000;
+        m[5][2] = 8;
+        m[5][3] = 2;
+        m[5][4] = 5;
+        m[5][5] = 0;
 
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            drawLine = new AnimationView(this);
-            drawLine.setBackgroundColor(Color.CYAN);
-            setContentView(drawLine);
-            drawLine.init();
-        }
-
-
-    /*class PathLine extends View {
-        Paint paint = new Paint();
-        public PathLine(Context context) {
-            super(context);
-            paint.setColor(Color.BLACK);
-        }
-        @Override
-        public void onDraw(Canvas canvas) {
-            canvas.drawLine(50, 100, 600, 600, paint);
-            canvas.drawLine(50, 550, 770, 0, paint);
-            Log.e("TAG","AQUI: "+hola);
-        }
-
-    }*/
-
-
-    public class AnimationView extends View {
-        Path path;
-        Paint paint;
-        float length;
-        public String partes;
-
-        public AnimationView(Context context)
-        {
-            super(context);
-        }
-
-        public AnimationView(Context context, AttributeSet attrs)
-        {
-            super(context, attrs);
-        }
-
-        public AnimationView(Context context, AttributeSet attrs, int defStyleAttr)
-        {
-            super(context, attrs, defStyleAttr);
-        }
-
-        class Pt{
-            float x, y;
-            Pt(float _x, float _y){
-                x = _x;
-                y = _y;
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+                if (m[i][j] == 10000) {
+                    path[i][j] = -1;
+                } else {
+                    path[i][j] = i;
+                }
             }
         }
 
-
-
-        Pt[] myPath = { new Pt(200, 200),
-
-                new Pt(300, 100),
-
-                new Pt(400, 200),
-
-                new Pt(500, 100),
-
-                new Pt(600, 200),
-
-                new Pt(700, 100),
-
-                new Pt(900, 100),
-
-                new Pt(900, 500),
-
-                new Pt(200, 500),
-
-                new Pt(200, 200)
-
-        };
-
-        public void init()
-        {
-            paint = new Paint();
-            paint.setColor(Color.BLUE);
-            paint.setStrokeWidth(10);
-            paint.setStyle(Paint.Style.STROKE);
-
-            path = new Path();
-
-            path.moveTo(myPath[0].x, myPath[0].y);
-
-            for (int i = 1; i < myPath.length; i++){
-
-                path.lineTo(myPath[i].x, myPath[i].y);
-
-            }
-
-            // Measure the path
-            PathMeasure measure = new PathMeasure(path, false);
-            length = measure.getLength();
-
-            float[] intervals = new float[]{length, length};
-
-            ObjectAnimator animator = ObjectAnimator.ofFloat(AnimationView.this, "phase", 1.0f, 0.0f);
-            animator.setDuration(7000);
-            animator.start();
-
-            Log.e("TAG","RECIBIDO: "+hola);
+        for (int i = 0; i < 6; i++) {
+            path[i][i] = i;
         }
 
-        //is called by animtor object
-        public void setPhase(float phase)
-        {
-            Log.d("pathview","setPhase called with:" + String.valueOf(phase));
-            paint.setPathEffect(createPathEffect(length, phase, 0.0f));
-            invalidate();//will calll onDraw
+        shortpath = shortestpath(m, path);
+
+        int start = 0;
+        int end = 4;
+
+        String myPath = end + "";
+
+        while (path[start][end] != start) {
+            myPath = path[start][end] + "->" + myPath;
+            end = path[start][end];
         }
 
-        private PathEffect createPathEffect(float pathLength, float phase, float offset)
-        {
-            return new DashPathEffect(new float[] {
-                    pathLength, pathLength
-            },
-                    Math.max(phase * pathLength, offset));
-        }
+        Log.e("TAG","PATH: "+myPath);
 
-        @Override
-        public void onDraw(Canvas c)
-        {
-            super.onDraw(c);
-            c.drawPath(path, paint);
-        }
+        myPath = start + "->" + myPath;
+        Log.e("TAG","ESTE ES EL CAMINO: "+myPath);
+
+        partes = myPath;
+
+        Intent i = new Intent(this, DrawLineActivity.class);
+        i.putExtra("partes", partes);
+        startActivity(i);
+        Log.e("TAG", "PARTES PARTES : " + partes);
+
     }
 
-}
+    public static int[][] shortestpath(int[][] adj, int[][] path) {
 
+        int n = adj.length;
+        int[][] ans = new int[n][n];
+
+        // Implementar el algoritmo en una matriz de copia de modo que la adyacencia no es
+        //destruido.
+        copy(ans, adj);
+
+        // Calcular rutas sucesivamente a través de una mejor k vértices.
+        for (int k = 0; k < n; k++) {
+
+            // Es así que entre cada par de puntos posibles.
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+
+
+                    if (ans[i][k] + ans[k][j] < ans[i][j]) {
+                        ans[i][j] = ans[i][k] + ans[k][j];
+                        path[i][j] = path[k][j];
+                    }
+                }
+            }
+        }
+
+        // Devuelva la matriz camino más corto.
+        return ans;
+    }
+
+    public static void copy(int[][] a, int[][] b) {
+
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < a[0].length; j++) {
+                a[i][j] = b[i][j];
+            }
+        }
+    }
+}
 
 
 

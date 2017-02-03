@@ -1,5 +1,6 @@
 package com.rinno.simaski.hacerpruebascodigo;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -13,6 +14,10 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -28,14 +33,15 @@ class DrawingView extends View {
     Paint paint2;
     float length;
     ObjectAnimator animator;
+    int cont;
 
     public String[] parts;
     public ArrayList<Float> coordx = new ArrayList<Float>();
     public ArrayList<Float> coordy = new ArrayList<Float>();
     public ArrayList<Float> coordz = new ArrayList<Float>();
     ArrayList arreglotemporal = new ArrayList();
-
     ArrayList arreglosegmentado = new ArrayList();
+    ArrayList arreglorecorrido = new ArrayList();
 
 
     public DrawingView(Context context)
@@ -65,10 +71,15 @@ class DrawingView extends View {
     /*Puntos[] myPath = { new Puntos(300, 100, 0), new Puntos(400, 200, 0), new Puntos(500, 100, 0), new Puntos(250, 350, 0), new Puntos(700, 200, 1), new Puntos(700, 100, 0),
             new Puntos(550, 350, 0), new Puntos(200, 200, 0)};*/
 
-    Puntos[] myPath = { new Puntos(540, 100, 0), new Puntos(440, 200, 0), new Puntos(500, 300, 0), new Puntos(300, 400, 0), new Puntos(470, 450, 0), new Puntos(550, 450, 0),
+    /*Puntos[] myPath = { new Puntos(540, 100, 0), new Puntos(440, 200, 0), new Puntos(500, 300, 0), new Puntos(300, 400, 0), new Puntos(470, 450, 0), new Puntos(550, 450, 0),
             new Puntos(380, 500, 0), new Puntos(500, 530, 1),new Puntos(750, 550, 0),new Puntos(200, 650, 0),new Puntos(480, 680, 0),new Puntos(540, 650, 0),new Puntos(650, 650, 0),
             new Puntos(850, 680, 0), new Puntos(250, 720, 0),new Puntos(400, 700, 1),new Puntos(540, 720, 0),new Puntos(150, 830, 0),new Puntos(360, 800, 0),new Puntos(600, 870, 0),
-            new Puntos(900, 800, 0), new Puntos(50, 930, 0),new Puntos(360, 980, 0),new Puntos(480, 950, 0), new Puntos(750, 940, 0),new Puntos(650, 1100, 0)};
+            new Puntos(900, 800, 0), new Puntos(50, 930, 0),new Puntos(360, 980, 0),new Puntos(480, 950, 0), new Puntos(750, 940, 0),new Puntos(650, 1100, 0)};*/
+
+    Puntos[] myPath = {new Puntos(540, 100, 0), new Puntos(440, 200, 0), new Puntos(500, 300, 0), new Puntos(300, 400, 0), new Puntos(470, 450, 0), new Puntos(550, 450, 0),
+            new Puntos(380, 500, 0), new Puntos(500, 530, 0),new Puntos(750, 550, 0),new Puntos(200, 650, 1),new Puntos(750, 550, 0), new Puntos(500, 530, 0),new Puntos(380, 500, 0),
+            new Puntos(550, 450, 0),new Puntos(470, 450, 0),new Puntos(300, 400, 0),new Puntos(500, 300, 0),new Puntos(440, 200, 0),new Puntos(540, 100, 0),new Puntos(750, 550, 0),
+            new Puntos(500, 530, 0),new Puntos(380, 500, 0),new Puntos(550, 450, 0),new Puntos(470, 450, 0),new Puntos(300, 400, 0),new Puntos(500, 300, 0)};
 
 
     public void init(String partes)
@@ -94,8 +105,8 @@ class DrawingView extends View {
 
         for(int i =0; i < parts.length; i++){
             Log.e("TAG","RECIBIDO: "+parts[i]);
-            coordx.add(myPath[Integer.parseInt(parts[i])].x);
-            coordy.add(myPath[Integer.parseInt(parts[i])].y);
+            //coordx.add(myPath[Integer.parseInt(parts[i])].x);
+            //coordy.add(myPath[Integer.parseInt(parts[i])].y);
             coordz.add(myPath[Integer.parseInt(parts[i])].z);
             arreglotemporal.add(parts[i]);
             if(coordz.get(i) == 1.0 || i == parts.length-1){
@@ -104,20 +115,26 @@ class DrawingView extends View {
             }
         }
 
-        /*for(int i =0; i < arreglosegmentado.size(); i++){
-            Log.e("TAG","RECIBIDO: "+arreglosegmentado.get(i));
-            coordx.add(myPath[Integer.parseInt(parts[i])].x);
-            coordy.add(myPath[Integer.parseInt(parts[i])].y);
-            coordz.add(myPath[Integer.parseInt(parts[i])].z);
-            *//*arreglotemporal.add(parts[i]);
-            if(coordz.get(i) == 1.0 || i == parts.length-1){
-                arreglosegmentado.add(arreglotemporal);
-                arreglotemporal = new ArrayList();
-            }*//*
-        }*/
+        Log.e("TAG", "SEGMENTADO: " + arreglosegmentado);
+        cont = arreglosegmentado.size();
 
-        Log.e("TAG","ARREGLO SEGMENTADO: "+arreglosegmentado);
+        while(cont > 0) {
+            int j = 0;
+            arreglorecorrido = (ArrayList) arreglosegmentado.get(j);
 
+            for (int i = 0; i < arreglorecorrido.size(); i++) {
+                Log.e("TAG", "RECIBIDO: " + arreglorecorrido);
+                coordx.add(myPath[Integer.parseInt(parts[i])].x);
+                coordy.add(myPath[Integer.parseInt(parts[i])].y);
+                coordz.add(myPath[Integer.parseInt(parts[i])].z);
+                arreglotemporal.add(parts[i]);
+                if (coordz.get(i) == 1.0 || i == parts.length - 1) {
+                    arreglosegmentado.add(arreglotemporal);
+                    arreglotemporal = new ArrayList();
+                }
+            }
+            break;
+        }
 
 
 
@@ -125,7 +142,7 @@ class DrawingView extends View {
 
         for (int i = 1; i < coordx.size(); i++){
                 path.lineTo(coordx.get(i), coordy.get(i));
-
+            Log.e("TAG","VALOR i = : "+i);
         }
 
         // Measure the path
@@ -135,6 +152,30 @@ class DrawingView extends View {
         float[] intervals = new float[]{length, length};
 
         animator.start();
+
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Toast.makeText(getContext(), "Final", Toast.LENGTH_SHORT).show();
+                String idGrupo = "correcto";
+                EventBus.getDefault().postSticky(new Message(idGrupo));
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
 
     }
 

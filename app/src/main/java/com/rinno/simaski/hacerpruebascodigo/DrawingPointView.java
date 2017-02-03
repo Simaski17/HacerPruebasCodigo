@@ -73,10 +73,15 @@ class DrawingPointView extends View {
 
     };*/
 
-    Puntos[] myPath = { new Puntos(540, 100, 0), new Puntos(440, 200, 0), new Puntos(500, 300, 0), new Puntos(300, 400, 0), new Puntos(470, 450, 0), new Puntos(550, 450, 0),
-            new Puntos(380, 500, 0), new Puntos(500, 530, 1),new Puntos(750, 550, 0),new Puntos(200, 650, 0),new Puntos(480, 680, 0),new Puntos(540, 650, 0),new Puntos(650, 650, 0),new Puntos(850, 680, 0),
-            new Puntos(250, 720, 0),new Puntos(400, 700, 1),new Puntos(540, 720, 0),new Puntos(150, 830, 0),new Puntos(360, 800, 0),new Puntos(600, 870, 0),new Puntos(900, 800, 0),
-            new Puntos(50, 930, 0),new Puntos(360, 980, 0),new Puntos(480, 950, 0), new Puntos(750, 940, 0),new Puntos(650, 1100, 0)};
+    /*Puntos[] myPath = { new Puntos(540, 100, 0), new Puntos(440, 200, 0), new Puntos(500, 300, 0), new Puntos(300, 400, 0), new Puntos(470, 450, 0), new Puntos(550, 450, 0),
+            new Puntos(380, 500, 0), new Puntos(500, 530, 1),new Puntos(750, 550, 0),new Puntos(200, 650, 0),new Puntos(480, 680, 0),new Puntos(540, 650, 0),new Puntos(650, 650, 0),
+            new Puntos(850, 680, 0), new Puntos(250, 720, 0),new Puntos(400, 700, 1),new Puntos(540, 720, 0),new Puntos(150, 830, 0),new Puntos(360, 800, 0),new Puntos(600, 870, 0),
+            new Puntos(900, 800, 0), new Puntos(50, 930, 0),new Puntos(360, 980, 0),new Puntos(480, 950, 0), new Puntos(750, 940, 0),new Puntos(650, 1100, 0)};*/
+
+    Puntos[] myPath = {new Puntos(540, 100, 0), new Puntos(440, 200, 0), new Puntos(500, 300, 0), new Puntos(300, 400, 0), new Puntos(470, 450, 0), new Puntos(550, 450, 0),
+            new Puntos(380, 500, 0), new Puntos(500, 530, 1),new Puntos(750, 550, 0),new Puntos(200, 650, 0),new Puntos(750, 550, 0), new Puntos(500, 530, 1),new Puntos(380, 500, 0),
+            new Puntos(550, 450, 0),new Puntos(470, 450, 0),new Puntos(300, 400, 0),new Puntos(500, 300, 0),new Puntos(440, 200, 0),new Puntos(540, 100, 0),new Puntos(750, 550, 0),
+            new Puntos(500, 530, 1),new Puntos(380, 500, 0),new Puntos(550, 450, 0),new Puntos(470, 450, 0),new Puntos(300, 400, 0),new Puntos(500, 300, 0)};
 
     public void init(String partes)
     {
